@@ -9,11 +9,12 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 
 router = APIRouter()
 
+
 @router.post("/integration/user", status_code=204)
 async def get_data_from_integration_and_create(
-        db: AsyncIOMotorDatabase = Depends(get_db),
-        api_service: ExternalAPIService = Depends(),
-        settings: Settings = Depends(get_settings),
+    db: AsyncIOMotorDatabase = Depends(get_db),
+    api_service: ExternalAPIService = Depends(),
+    settings: Settings = Depends(get_settings),
 ):
     collection = db["users"]
 
@@ -32,9 +33,9 @@ async def get_data_from_integration_and_create(
 
 @router.post("/integration/admin", status_code=204)
 async def get_data_from_integration_and_create(
-        db: AsyncIOMotorDatabase = Depends(get_db),
-        api_service: ExternalAPIService = Depends(),
-        settings: Settings = Depends(get_settings),
+    db: AsyncIOMotorDatabase = Depends(get_db),
+    api_service: ExternalAPIService = Depends(),
+    settings: Settings = Depends(get_settings),
 ):
     collection = db["users"]
 

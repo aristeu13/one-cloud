@@ -1,6 +1,7 @@
 from datetime import datetime, UTC
 from motor.motor_asyncio import AsyncIOMotorCollection
 
+
 class UserRepository:
     def __init__(self, collection: AsyncIOMotorCollection):
         self.collection = collection
@@ -17,6 +18,6 @@ class UserRepository:
         result = await self.collection.update_one(
             {"data.email": data["data"]["email"]},
             {"$set": {**data, "last_updated": now}},
-            upsert=True
+            upsert=True,
         )
         return result

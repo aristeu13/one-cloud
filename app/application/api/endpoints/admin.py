@@ -15,9 +15,9 @@ router = APIRouter()
 
 @router.get("/admin")
 async def get_admin(
-        _: None = Depends(check_current_admin),
-        db: AsyncIOMotorDatabase = Depends(get_db),
-        settings: Settings = Depends(get_settings),
+    _: None = Depends(check_current_admin),
+    db: AsyncIOMotorDatabase = Depends(get_db),
+    settings: Settings = Depends(get_settings),
 ) -> AdminOut:
     collection = db["users"]
 

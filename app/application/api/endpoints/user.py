@@ -15,9 +15,9 @@ router = APIRouter()
 
 @router.get("/user")
 async def get_user(
-        _: None = Depends(check_current_user),
-        db: AsyncIOMotorDatabase = Depends(get_db),
-        settings: Settings = Depends(get_settings),
+    _: None = Depends(check_current_user),
+    db: AsyncIOMotorDatabase = Depends(get_db),
+    settings: Settings = Depends(get_settings),
 ) -> UserOut:
     collection = db["users"]
 

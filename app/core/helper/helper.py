@@ -1,5 +1,6 @@
 from bson import ObjectId
 
+
 def convert_object_id(data):
     """Convert ObjectId to string in a MongoDB document."""
     if isinstance(data, list):
