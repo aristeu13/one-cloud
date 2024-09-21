@@ -1,6 +1,5 @@
 from datetime import timedelta, UTC, datetime
 from fastapi import HTTPException
-
 from app.application.repository.user_repository import UserRepository
 from app.core.settings.setting import Settings
 
@@ -20,45 +19,34 @@ class UserService:
         )
 
     async def update_user(self, user_data: dict):
-        existing_user = await self.repository.find_by_email(user_data["data"]["email"])
-
-        if existing_user and self.is_within_time_window(existing_user):
-            raise HTTPException(
-                status_code=400,
-                detail="User was updated recently. Please wait before updating again.",
-            )
-
-        result = await self.repository.update(user_data, role="user")
-        if not result.matched_count and not result.upserted_id:
-            raise HTTPException(
-                status_code=500, detail="User could not be inserted or updated."
-            )
+        await self._update_entity(user_data, role="user", entity="User")
 
     async def update_admin(self, admin_data: dict):
-        existing_admin = await self.repository.find_by_email(
-            admin_data["data"]["email"]
-        )
+        await self._update_entity(admin_data, role="admin", entity="Admin")
 
-        if existing_admin and self.is_within_time_window(existing_admin):
+    async def _update_entity(self, data: dict, role: str, entity: str):
+        existing_entity = await self.repository.find_by_email(data["data"]["email"])
+
+        if existing_entity and self.is_within_time_window(existing_entity):
             raise HTTPException(
                 status_code=400,
-                detail="Admin was updated recently. Please wait before updating again.",
+                detail=f"{entity} was updated recently. Please wait before updating again.",
             )
 
-        result = await self.repository.update(admin_data, role="admin")
+        result = await self.repository.update(data, role=role)
         if not result.matched_count and not result.upserted_id:
             raise HTTPException(
-                status_code=500, detail="Admin could not be inserted or updated."
+                status_code=500, detail=f"{entity} could not be inserted or updated."
             )
 
     async def get_user(self):
-        user = await self.repository.find_by_role("user")
-        if not user:
-            raise HTTPException(status_code=404, detail="User not found")
-        return user
+        return await self._get_entity_by_role("user", "User")
 
     async def get_admin(self):
-        user = await self.repository.find_by_role("admin")
-        if not user:
-            raise HTTPException(status_code=404, detail="User not found")
-        return user
+        return await self._get_entity_by_role("admin", "Admin")
+
+    async def _get_entity_by_role(self, role: str, entity: str):
+        entity_data = await self.repository.find_by_role(role)
+        if not entity_data:
+            raise HTTPException(status_code=404, detail=f"{entity} not found")
+        return entity_data
