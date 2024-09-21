@@ -21,7 +21,7 @@ async def test_update_user_within_time_window():
 
     with pytest.raises(HTTPException) as exc_info:
         await user_service.update_user({"data": {"email": "john@example.com"}})
-    
+
     assert exc_info.value.status_code == 400
     assert "User was updated recently" in exc_info.value.detail
 
@@ -39,7 +39,9 @@ async def test_update_user_successful():
 
     await user_service.update_user({"data": {"email": "john@example.com"}})
 
-    mock_repo.update.assert_called_once_with({"data": {"email": "john@example.com"}}, role="user")
+    mock_repo.update.assert_called_once_with(
+        {"data": {"email": "john@example.com"}}, role="user"
+    )
 
 
 @pytest.mark.asyncio
@@ -59,7 +61,9 @@ async def test_get_user_not_found():
 @pytest.mark.asyncio
 async def test_get_user_success():
     mock_repo = AsyncMock()
-    mock_repo.find_by_role.return_value = {"data": {"email": "john@example.com", "name": "John"}}
+    mock_repo.find_by_role.return_value = {
+        "data": {"email": "john@example.com", "name": "John"}
+    }
 
     user_service = UserService(repository=mock_repo, settings=AsyncMock())
 
