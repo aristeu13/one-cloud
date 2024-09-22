@@ -1,0 +1,28 @@
+services:
+  mongo_test:
+    image: mongo:latest
+    container_name: mongo_test
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: testuser
+      MONGO_INITDB_ROOT_PASSWORD: testpassword
+      MONGO_INITDB_DATABASE: test_db
+    volumes:
+      - mongo_test_data:/data/db
+
+  app_test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    container_name: fastapi_test
+    environment:
+      DATABASE_URL: mongodb://testuser:testpassword@mongo_test:27017/test_db?authSource=admin
+      EXTERNAL_API: https://fake.com
+    depends_on:
+      - mongo_test
+    volumes:
+      - .:/app
+
+volumes:
+  mongo_test_data:

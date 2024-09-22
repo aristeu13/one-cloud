@@ -13,7 +13,6 @@ venv/
 
 # Ignore logs and temporary files
 *.log
-*.txt
 tmp/
 
 # Ignore git and version control directories
