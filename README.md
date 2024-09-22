@@ -100,7 +100,6 @@ Essas rotas farão uma requisição ao serviço externo fictício e armazenarão
 Após alimentar o banco de dados, você pode acessar os dados inseridos utilizando as seguintes rotas protegidas:
 
 - GET /user (necessário ter o papel de usuário)
-- Requer token JWT no cabeçalho:
     - Requer token JWT no cabeçalho:
     ```makefile
     Authorization: Bearer <token>
