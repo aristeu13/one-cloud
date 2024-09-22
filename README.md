@@ -73,7 +73,7 @@ docker-compose -f docker-compose.test.yml up --build
 Primeiramente, você deve obter um token de autenticação para poder acessar as rotas protegidas. Para isso, faça uma requisição POST para a rota /token, utilizando as credenciais fornecidas:
 - POST /token
 - Credenciais:
-    - no corpo do e-mail.
+    - no corpo do e-mail. (As mesmas que recebi para realizar o desafio com seus respectivos acessos e papeis)
 - Reposta esperada:
     - um token JWT será retornado. E será utilizado para todas as outras requisições que precisam de autenticação.
 
