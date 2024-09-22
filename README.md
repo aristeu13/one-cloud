@@ -36,7 +36,7 @@ Para construir e rodar o app usando Docker, execute o seguinte comando:
 docker-compose up --build
 ```
 
-A API estará disponível em http://localhost:8000. Você também pode visualizar a documentação interativa da API em http://localhost:8000/docs.
+A API estará disponível em http://localhost:80 ou http://0.0.0.0:80/. Você também pode visualizar a documentação interativa da API em http://localhost:80/docs ou http://0.0.0.0:80/docs.
 
 #### 2. Executando os Testes
 Testes Unitários e de Integração
@@ -65,3 +65,59 @@ docker-compose -f docker-compose.test.yml up --build
 ├── README.md              # Documentação do projeto
 └── pyproject.toml         # Dependências do Poetry
 ```
+
+# Como Interagir com as APIs
+
+## 1. Obtenha o Token JWT
+
+Primeiramente, você deve obter um token de autenticação para poder acessar as rotas protegidas. Para isso, faça uma requisição POST para a rota /token, utilizando as credenciais fornecidas:
+- POST /token
+- Credenciais:
+    - no corpo do e-mail.
+- Reposta esperada:
+    - um token JWT será retornado. E será utilizado para todas as outras requisições que precisam de autenticação.
+
+## 2. Alimente o Banco de Dados com a API Externa
+
+Após obter o token, você precisa preencher o banco de dados com os dados vindos de uma API externa. Para isso, existem duas rotas para integração:
+
+- POST `/integration/user` (necessário ter o papel de usuário)
+    - Requer token JWT no cabeçalho:
+    ```makefile
+    Authorization: Bearer <token>
+    ```
+
+- POST `/integration/admin` (necessário ter o papel de administrador)
+    - Requer token JWT no cabeçalho:
+    ```makefile
+    Authorization: Bearer <token>
+    ```
+
+Essas rotas farão uma requisição ao serviço externo fictício e armazenarão os dados no banco de dados MongoDB.
+
+## 3. Acesse as Rotas Protegidas de Dados de Usuário e Admin
+
+Após alimentar o banco de dados, você pode acessar os dados inseridos utilizando as seguintes rotas protegidas:
+
+- GET /user (necessário ter o papel de usuário)
+- Requer token JWT no cabeçalho:
+    - Requer token JWT no cabeçalho:
+    ```makefile
+    Authorization: Bearer <token>
+    ```
+    - Resposta esperada: Dados do usuário.
+
+- GET /admin (necessário ter o papel de administrador)
+    - Requer token JWT no cabeçalho:
+    
+    ```makefile
+    Authorization: Bearer <token>
+    ```
+
+    - Resposta esperada: Dados do administrador.
+
+## Resumo da Ordem Correta de Interação
+
+1. Obtenha o token JWT através da rota POST /token, utilizando as credenciais fornecidas.
+2. Use as rotas POST /integration/user e POST /integration/admin para alimentar o banco de dados com dados da API externa.
+3. Acesse as rotas protegidas GET /user e GET /admin para consultar os dados armazenados no MongoDB, de acordo com o papel do token utilizado.
